@@ -123,6 +123,7 @@ exec { 'Check USB Drive':
   logoutput => true,
 }
 
+#T19 Install python
 exec { 'Install Python from USB':
   command   => 'D:\\MiniPC\\python-3.10.9-amd64.exe /silent',  # Adjust the installation command as needed
   logoutput => true,
@@ -130,35 +131,41 @@ exec { 'Install Python from USB':
   require   => Exec['Check USB Drive'],
 }
 
+#T20 Upgrade pip
 exec { 'upgrade pip':
   command => 'python -m pip install --upgrade pip',
   path    => ['C:\Users\CarGas\AppData\Local\Programs\Python\Python310','/usr/bin', '/usr/local/bin'],
 }
 
+#T21 Install Python-snap7
 exec { 'install python-snap7':
   command => 'python -m pip install python-snap7',
   path    => ['C:\Users\CarGas\AppData\Local\Programs\Python\Python310','/usr/bin', '/usr/local/bin'],
   require => Exec['upgrade pip'],
 }
 
+#T22 Install python-Time 
 exec { 'install python-time':
   command => 'python -m pip install python-time',
   path    => ['C:\Users\CarGas\AppData\Local\Programs\Python\Python310','/usr/bin', '/usr/local/bin'],
   require => Exec['upgrade pip'],
 }
 
+#T23 Install Python pydoc
 exec { 'install pyodbc':
   command => 'python -m pip install pyodbc',
   path    => ['C:\Users\CarGas\AppData\Local\Programs\Python\Python310','/usr/bin', '/usr/local/bin'],
   require => Exec['upgrade pip'],
 }
 
+#T24 Install Python Schedule
 exec { 'install schedule':
   command => 'python -m pip install schedule',
   path    => ['C:\Users\CarGas\AppData\Local\Programs\Python\Python310','/usr/bin', '/usr/local/bin'],
   require => Exec['upgrade pip'],
 }
 
+#T25 Install Python-Math
 exec { 'install python-math':
   command => 'python -m pip install python-math',
   path    => ['C:\Users\CarGas\AppData\Local\Programs\Python\Python310','/usr/bin', '/usr/local/bin'],
@@ -166,6 +173,7 @@ exec { 'install python-math':
 }
 
 
+#T26 Install Sql Server management studio
 exec { 'Install SSMS from USB':
   command   => 'D:\\MiniPC\\SQL\\SSMS-Setup-ENU.exe /silent',  # Adjust the installation command as needed
   logoutput => true,
@@ -173,6 +181,7 @@ exec { 'Install SSMS from USB':
   require   => Exec['Check USB Drive'],
 }
 
+#T27 Install Sql Server
 exec { 'Install SQL from USB':
   command   => 'D:\\MiniPC\\SQL\\SQLEXPR_x64_ENU\\SETUPT.exe /silent',  # Adjust the installation command as needed
   logoutput => true,
@@ -180,7 +189,7 @@ exec { 'Install SQL from USB':
   require   => Exec['Check USB Drive'],
 }
 
-
+#T28 Check Python Libriries
 exec { 'check python libraries':
   command => 'python -c "import sys, math, time, datetime, snap7, pyodbc, schedule, platform"',
   path    => ['C:\Users\CarGas\AppData\Local\Programs\Python\Python310','/usr/bin', '/usr/local/bin'],
@@ -192,14 +201,14 @@ exec { 'check python libraries':
     Exec['install python-math'],
   ],
 }
-# Define Inbound Rule for SQL
+#T29 Define Inbound Rule for SQL
 exec { 'create_inbound_sql_rule':
   command => "${powershell_path} -Command \"New-NetFirewallRule -DisplayName 'sql conn' -Direction Inbound -Protocol TCP -LocalPort 1433 -Action Allow -Profile Domain,Public\"",
   unless  => "${powershell_path} -Command \"Get-NetFirewallRule -DisplayName 'sql conn' -ErrorAction SilentlyContinue\"",
   logoutput => true,
 }
 
-# Define Outbound Rule for SQL
+#T30 Define Outbound Rule for SQL
 exec { 'create_outbound_sql_rule':
   command => "${powershell_path} -Command \"New-NetFirewallRule -DisplayName 'sql conn' -Direction Outbound -Protocol TCP -LocalPort 1433 -Action Allow -Profile Domain,Public\"",
   unless  => "${powershell_path} -Command \"Get-NetFirewallRule -DisplayName 'sql conn' -ErrorAction SilentlyContinue\"",
